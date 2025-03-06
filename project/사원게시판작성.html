@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사원게시판 작성</title>
+    
+    <!-- CSS 스타일 -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            background: #4a90e2;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #357ab7;
+        }
+
+        .별 {
+            color: red;
+        }
+    </style>
+    
+    <!-- JavaScript -->
+    <script>
+        function savePost() {
+            let title = document.getElementById('title').value.trim();
+            let content = document.getElementById('content').value.trim();
+
+            if (title === '' || content === '') {
+                alert('제목과 내용은 필수 입력 사항입니다.');
+                return;
+            }
+
+            let date = new Date().toISOString().split('T')[0];
+            let employeePosts = JSON.parse(localStorage.getItem('employeePosts')) || [];
+
+            let postId = new URLSearchParams(window.location.search).get('id');
+            if (postId !== null) {
+                employeePosts[postId] = { title, content, date, views: 0 };
+            } else {
+                employeePosts.push({ title, content, date, views: 0 });
+            }
+
+            localStorage.setItem('employeePosts', JSON.stringify(employeePosts));
+            window.location.href = '사원게시판.html';
+        }
+
+        window.onload = function () {
+            let postId = new URLSearchParams(window.location.search).get('id');
+            if (postId !== null) {
+                let employeePosts = JSON.parse(localStorage.getItem('employeePosts')) || [];
+                document.getElementById('title').value = employeePosts[postId].title;
+                document.getElementById('content').value = employeePosts[postId].content;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>사원게시판 작성</h2>
+        <span class="별">* 필수기입</span>
+        <div class="form-group">
+            <label for="title">제목<span class="별"> *</span></label>
+            <input type="text" id="title" placeholder="제목을 입력하세요">
+        </div>
+        <div class="form-group">
+            <label for="file">첨부파일</label>
+            <input type="file" id="file">
+        </div>
+        <div class="form-group">
+            <label for="content">내용<span class="별"> *</span></label>
+            <textarea id="content" rows="6" placeholder="내용을 입력하세요"></textarea>
+        </div>
+        <div class="button-group">
+            <button type="submit" onclick="savePost()">작성 완료</button>
+            <button type="button" onclick="window.location.href='사원게시판.html'">목록</button>
+        </div>
+    </div>
+</body>
+
+</html>

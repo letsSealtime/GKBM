@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사원게시판</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f5f5f5;
+        }
+
+        .main-content {
+            flex: 1;
+            width: 95%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .board-header button {
+            padding: 8px 12px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .active:hover {
+            background-color: #357ab7;
+            cursor: pointer;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .search-box input,
+        .search-box button {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-box button {
+            background: #4a90e2;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #4a90e2;
+            color: white;
+        }
+    </style>
+
+    <script>
+        //----------------------
+        // 체크박스 관련 함수
+        //----------------------
+
+        // 전체 체크박스 토글 함수
+        function toggleAllCheckboxes() {
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('.post-checkbox');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = masterCheckbox.checked;
+            });
+        }
+
+        // 개별 체크박스 상태 변경 시 전체 체크박스 업데이트 함수
+        function updateMasterCheckbox() {
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('.post-checkbox');
+            const checkedBoxes = document.querySelectorAll('.post-checkbox:checked');
+
+            masterCheckbox.checked = (checkedBoxes.length === checkboxes.length);
+        }
+
+        //----------------------
+        // 게시글 목록 로드 함수
+        //----------------------
+        function loadPosts() {
+            let posts = JSON.parse(localStorage.getItem('employeePosts')) || [];
+            let tableBody = document.getElementById('postList');
+            let tableContent = '';
+
+            posts.forEach((post, index) => {
+                tableContent += `
+                <tr>
+                    <td><input type="checkbox" class="post-checkbox" data-index="${index}" onchange="updateMasterCheckbox()"></td>
+                    <td>${index + 1}</td>
+                    <td><a href="사원게시판작성.html?id=${index}">${post.title}</a></td>
+                    <td>${post.author || '익명'}</td>
+                    <td>${post.date}</td>
+                    <td>${post.views}</td>
+                </tr>
+            `;
+            });
+
+            tableBody.innerHTML = tableContent;
+
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            if (masterCheckbox) {
+                masterCheckbox.addEventListener('change', toggleAllCheckboxes);
+            }
+        }
+
+        //----------------------
+        // 게시글 삭제 함수
+        //----------------------
+        function deletePosts() {
+            let posts = JSON.parse(localStorage.getItem('employeePosts')) || [];
+            let checkboxes = document.querySelectorAll('.post-checkbox:checked');
+
+            if (checkboxes.length === 0) {
+                alert('삭제할 항목을 선택하세요.');
+                return;
+            }
+
+            if (confirm('선택한 항목을 삭제하시겠습니까?')) {
+                let indicesToDelete = Array.from(checkboxes)
+                    .map(checkbox => parseInt(checkbox.getAttribute('data-index')))
+                    .sort((a, b) => b - a);
+
+                indicesToDelete.forEach(index => {
+                    posts.splice(index, 1);
+                });
+
+                localStorage.setItem('employeePosts', JSON.stringify(posts));
+                loadPosts();
+
+                const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+                if (masterCheckbox) {
+                    masterCheckbox.checked = false;
+                }
+                alert('삭제가 완료되었습니다.');
+            }
+        }
+
+        //----------------------
+        // 게시글 수정 함수
+        //----------------------
+        function editPosts() {
+            let checkboxes = document.querySelectorAll('.post-checkbox:checked');
+
+            if (checkboxes.length !== 1) {
+                alert('수정할 항목을 하나만 선택해주세요.');
+                return;
+            }
+
+            let index = checkboxes[0].getAttribute('data-index');
+            window.location.href = `사원게시판작성.html?id=${index}`;
+        }
+
+        //----------------------
+        // 검색 기능 함수
+        //----------------------
+        function searchPosts() {
+            const searchText = document.querySelector('input[placeholder="검색어 입력"]').value.toLowerCase();
+            const startDate = document.querySelector('input[type="date"]:first-of-type').value;
+            const endDate = document.querySelector('input[type="date"]:last-of-type').value;
+
+            let posts = JSON.parse(localStorage.getItem('employeePosts')) || [];
+
+            const filteredPosts = posts.filter(post => {
+                const matchesText = !searchText ||
+                    post.title.toLowerCase().includes(searchText) ||
+                    (post.content && post.content.toLowerCase().includes(searchText));
+
+                const postDate = post.date;
+                const matchesDate = (!startDate || postDate >= startDate) &&
+                    (!endDate || postDate <= endDate);
+
+                return matchesText && matchesDate;
+            });
+
+            displayFilteredPosts(filteredPosts);
+        }
+
+        function displayFilteredPosts(filteredPosts) {
+            let tableBody = document.getElementById('postList');
+            let tableContent = '';
+
+            filteredPosts.forEach((post, index) => {
+                tableContent += `
+                <tr>
+                    <td><input type="checkbox" class="post-checkbox" data-index="${index}" onchange="updateMasterCheckbox()"></td>
+                    <td>${index + 1}</td>
+                    <td><a href="사원게시판작성.html?id=${index}">${post.title}</a></td>
+                    <td>${post.author || '익명'}</td>
+                    <td>${post.date}</td>
+                    <td>${post.views}</td>
+                </tr>
+            `;
+            });
+
+            tableBody.innerHTML = tableContent;
+
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            if (masterCheckbox) {
+                masterCheckbox.checked = false;
+            }
+        }
+
+        //----------------------
+        // 페이지 로드 이벤트
+        //----------------------
+        window.onload = function () {
+            loadPosts();
+
+            const searchButton = document.querySelector('button.active:nth-of-type(1)');
+            if (searchButton) {
+                searchButton.addEventListener('click', searchPosts);
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <!-- 메인 사원게시판 컨텐츠 -->
+    <div class="main-content">
+        <div class="board-header">
+            <h2>사원게시판</h2>
+            <button type="button" class="active" onclick="window.location.href='사원게시판작성.html'">사원게시판 작성</button>
+        </div>
+
+        <!-- 검색 필터 -->
+        <div class="search-box">
+            <label>작성일자</label>
+            <input type="date">
+            <span>~</span>
+            <input type="date">
+            <input type="text" placeholder="검색어 입력">
+            <button class="active" onclick="searchPosts()">🔍 검색</button>
+            <button class="active" onclick="editPosts()">수정</button>
+            <button class="active" onclick="deletePosts()">삭제</button>
+        </div>
+
+        <!-- 사원게시판 리스트 -->
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>순번</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일자</th>
+                    <th>조회수</th>
+                </tr>
+
+                <td><input type="checkbox"></td>
+                <td>1</td>
+                <td>집가고싶다.</td>
+                <td>익명</td>
+                <td>2025-02-07</td>
+                <td>468</td>
+
+            </thead>
+            <tbody id="postList"></tbody>
+        </table>
+    </div>
+</body>
+
+</html>

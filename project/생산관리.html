@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 95%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            border: 1px solid black;
+        }
+
+        .form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sel {
+            display: flex;
+            align-items: right;
+        }
+
+        .form-row {
+            display: flex;
+            flex-grow: 1;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-column {
+            flex: 1 1 calc(33% - 20px)
+        }
+
+        .form-row .buttons {
+            display: flex;
+            gap: 10px;
+            /* 버튼 간 간격 */
+        }
+
+        label {
+            min-width: 60px;
+        }
+
+        input {
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        .add_input {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #4a90e2;
+            cursor: pointer;
+        }
+
+        .pagination button:hover {
+            background: #0056b3;
+        }
+
+        .none {
+            display: none;
+        }
+
+        #none td {
+            width: 12.5%;
+        }
+
+        #none input {
+            width: 80%;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#insert").on("click", function () {
+                $("#none").toggleClass("none");
+            });
+
+            $(".enter").on("click", function () {
+
+                let number = true
+
+                if (true) {
+                    $(".fourth input[type='number']").each(function () {
+                        if ($(this).val() == "") {
+                            number = false
+                        }
+                    })
+                }
+
+                if (number) {
+
+                    let tbody = $("<tbody></tbody>");
+                    let tr = $("<tr></tr>");
+                    let tr_2 = $("<tr></tr>");
+                    let tr_3 = $("<tr></tr>");
+                    let tr_4 = $("<tr></tr>");
+                    let hr = $("<hr>");
+
+                    let th = $("<td rowspan='3'></td>");
+                    th.text("주차");
+                    tr.append(th);
+
+                    let first = ["예상수주: ", "전주 마감 재고: ", "금주 필수 생산: ", "차주 예상 수주: "];
+                    let second = ["안전재고: ", "금주 생산계획: ", "품목: "];
+
+                    $(".first td:not(:first-child)").each(function (index) {
+                        let td = $("<td colspan='2'></td>");
+                        td.text($(this).text());
+                        tr.append(td);
+                        tbody.append(tr);
+                    });
+
+                    $(".second td").each(function (index) {
+                        if (index < 2) {
+                            let td = $("<td colspan='3'></td>");
+                            td.text($(this).text());
+                            tr_2.append(td);
+                        } else if (index === 2) {
+                            let td = $("<td colspan='4'></td>");
+                            td.text($(this).text());
+                            tr_2.append(td);
+                        } else {
+                            let selectedText = $(this).find("select option:selected").text();
+                            let td = $("<td colspan='4'></td>");
+                            td.text(second[2] + selectedText);
+                            tr_2.append(td);
+                        }
+                        tbody.append(tr_2);
+                    });
+
+                    $(".third td").each(function (index) {
+                        if (7 > index && index >= 0) {
+                            let td = $("<td></td>");
+                            td.text($(this).text());
+                            tr_3.append(td);
+                            tbody.append(tr_3);
+                        } else if (index == 7) {
+                            let td = $("<td></td>");
+                            let deleteButton = $("<button class='tr_del'>삭제</button>");
+                            td.append(deleteButton);
+                            tr_3.append(td);
+                            tbody.append(tr_3);
+                        }
+                    });
+
+                    $(".fourth input").each(function (index) {
+                        let td = $("<td></td>");
+                        td.text($(this).val());
+                        tr_4.append(td);
+                        if (index == $(".fourth input").length - 1) {
+                            let add_td = $("<td></td>");
+                            let button = $("<button class='tr_up'>수정</button>");
+                            add_td.append(button);
+                            tr_4.append(add_td);
+                        }
+                        tbody.append(tr_4);
+                    });
+
+                    $("#table-body").append(tbody);
+                } else {
+                    alert("필수 값을 모두 기입해주세요.")
+                }
+            });
+
+            // tr_del 클래스의 버튼을 누르면 해당 줄을 삭제하는 이벤트 핸들러 추가
+            $(document).on("click", ".tr_del", function () {
+                $(this).closest("tbody").remove();
+            });
+
+            // tr_up 클래스의 버튼을 누르면 해당 행에 input 요소가 나타나는 이벤트 핸들러 추가
+            $(document).on("click", ".tr_up", function () {
+                let tr = $(this).closest("tr");
+                tr.find("td:not(:first-child)").each(function () {
+                    let td = $(this);
+                    let text = td.text();
+                    if (!td.find("button").length) {
+                        td.html("<input type='text' value='" + text + "' style='width: 100%; box-sizing: border-box;'>");
+                    }
+                });
+                $(this).text("입력완료").removeClass("tr_up").addClass("tr_input");
+            });
+
+            // tr_input 클래스의 버튼을 누르면 input 값을 저장하고 표시하는 이벤트 핸들러 추가
+            $(document).on("click", ".tr_input", function () {
+                let tbody = $(this).closest("tbody");
+                tbody.find("td").each(function () {
+                    let td = $(this);
+                    let input = td.find("input");
+                    if (input.length) {
+                        td.text(input.val());
+                    }
+                });
+                $(this).text("수정").removeClass("tr_input").addClass("tr_up");
+            });
+        });
+
+
+
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>◎ 생산계획관리</h1>
+
+        <!-- 입력할곳 및 등록, 조회, 수정, 삭제버튼 -->
+        <span>* 모두기입</span>
+        <div class="form">
+            <div class="text">
+                <h2>주차 생산계획 관리</h2>
+            </div>
+            <div class="form buttons">
+                <div>
+                    <select>
+                        <option>2024</option>
+                        <option>2025</option>
+                    </select>
+                    <select>
+                        <option>6w</option>
+                        <option>7w</option>
+                    </select>
+                </div>
+                <button id="search">조회</button>
+                <button id="insert">등록</button>
+            </div>
+        </div>
+        <!-- 내가 체크한것들을 조회버튼을 누르면 추출 -->
+        <div id="check"></div>
+
+        <table id="none" class="none">
+            <tbody>
+                <tr class="first">
+                    <td rowspan="3">
+                        <h3>6w</h3>
+                    </td>
+                    <td colspan="2">예상수주: 1800
+                    </td>
+                    <td colspan="2">전주 마감 재고: 500
+                    </td>
+                    <td colspan="2">금주 필수 생산: 2000
+                    </td>
+                    <td colspan="2">차주 예상 수주: 2200
+                    </td>
+                </tr>
+                <tr class="second">
+                    <td colspan="3">안전재고: 500
+                    </td>
+                    <td colspan="4">금주 생산계획: 1700
+                    </td>
+                    <td>품목:
+                        <select>
+                            <option>칫솔</option>
+                            <option>강철칫솔</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="third">
+                    <td>02/02</td>
+                    <td>02/03</td>
+                    <td>02/04</td>
+                    <td>02/05</td>
+                    <td>02/06</td>
+                    <td>02/07</td>
+                    <td>02/08</td>
+                    <td rowspan="2"><button class="enter">등록</button></td>
+                </tr>
+                <tr class="fourth">
+                    <td>작업번호:
+                        <input style="text-align: center; border: none; background-color: white; color: black;"
+                            type='text' value="0001" disabled="disabled">
+                    </td>
+                    <td><span>*</span><input type='number'></td>
+                    <td><span>*</span><input type='number'></td>
+                    <td><span>*</span><input type='number'></td>
+                    <td><span>*</span><input type='number'></td>
+                    <td><span>*</span><input type='number'></td>
+                    <td><span>*</span><input type='number'></td>
+                    <td><span>*</span><input type='number'></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <!-- 입력한것을 등록할때 뭐인지 보여줄 칸 -->
+        <table id="table-body">
+            <tbody>
+                <tr>
+                    <td rowspan="3">6w</td>
+                    <td colspan="2">예상수주: 1,800</td>
+                    <td colspan="2">전주 마감 재고: 500</td>
+                    <td colspan="2">금주 필수 생산: 2,000</td>
+                    <td colspan="2">차주 예상 수주: 2,200</td>
+                </tr>
+                <tr>
+                    <td colspan="3">안전재고: 500</td>
+                    <td colspan="4">금주 생산 계획: 1,70</td>
+                    <td>품목: 칫솔</td>
+                </tr>
+                <tr>
+                    <td>02/02</td>
+                    <td>02/03</td>
+                    <td>02/04</td>
+                    <td>02/05</td>
+                    <td>02/06</td>
+                    <td>02/07</td>
+                    <td>02/08</td>
+                    <td><button>삭제</button></td>
+                </tr>
+                <tr>
+                    <td>작업번호: 0001</td>
+                    <td>500</td>
+                    <td>200</td>
+                    <td>100</td>
+                    <td>700</td>
+                    <td>600</td>
+                    <td>400</td>
+                    <td>200</td>
+                    <td><button>수정</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 페이지 넘길때 쓸 버튼들 -->
+        <div class="pagination">
+            <button>&lt;</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>10</button>
+            <button>&gt;</button>
+        </div>
+    </div>
+</body>
+
+</html>

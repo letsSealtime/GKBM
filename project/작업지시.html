@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 95%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            border: 1px solid black;
+        }
+
+        .form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-grow: 1;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-column {
+            flex: 1 1 calc(33% - 20px)
+        }
+
+        .form-row .buttons {
+            display: flex;
+            gap: 10px;
+            /* 버튼 간 간격 */
+        }
+
+        label {
+            min-width: 60px;
+        }
+
+        input {
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        .add_input {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #4a90e2;
+            cursor: pointer;
+        }
+
+        .pagination button:hover {
+            background: #0056b3;
+        }
+
+        .none {
+            display: none;
+        }
+
+        #none input {
+            width: 30px;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <script>
+
+        window.addEventListener("load", init)
+
+        function init() {
+
+            $("#insert").on("click", function () {
+                alert("등록 버튼 클릭시 생산 계획의 데이터베이스를 받아 요일별 계획 생산 노출")
+                $("#none").toggle()
+            })
+
+            $("tr button").on("click", function () {
+                console.log(this)
+                console.log($(this))
+                let index = $(this).closest("tr").index()
+                console.log(index)
+                let buttons = $("#table-body tr")
+                $(buttons[index - 1]).toggle()
+                console.log(buttons[index])
+                alert("주차 생산 계획의 값에서 품목별 등록 버튼을 통해 일일 작업 지시서 생성")
+            })
+
+            let check = $("#table-body input[type='checkbox']")
+            check.on("click", function () {
+                let current = $(this).closest("tr")
+                $("#delete").on("click", function () {
+                    alert("생성된 데이터를 삭제")
+                    current.remove()
+                })
+            })
+
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>◎ 작업지시관리</h1>
+
+        <!-- 입력할곳 및 등록, 조회, 수정, 삭제버튼 -->
+        <div class="form">
+            <div class="text">
+                <h2>일별 작업지시 관리</h2>
+            </div>
+            <div class="buttons">
+                <button id="insert">등록</button>
+                <button id="delete">삭제</button>
+            </div>
+        </div>
+        <!-- 내가 체크한것들을 조회버튼을 누르면 추출 -->
+        <div id="check"></div>
+
+        <table id="none" class="none">
+            <tr>
+                <td>주차</td>
+                <td>생성일자</td>
+                <td>품목</td>
+                <td>주차 생산 수량</td>
+                <td>생산 완료 수량</td>
+                <td>금일 생산 수량</td>
+                <td>생산 라인</td>
+                <td>등록</td>
+            </tr>
+            <tr>
+                <td>6w</td>
+                <td>2025/02/04</td>
+                <td>T-10</td>
+                <td>500</td>
+                <td>300</td>
+                <td><input type='text'></td>
+                <td>
+                    <select>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </td>
+                <td><button>등록</button></td>
+            </tr>
+            <tr>
+                <td>6w</td>
+                <td>2025/02/04</td>
+                <td>S-10</td>
+                <td>100</td>
+                <td>50</td>
+                <td><input type='text'></td>
+                <td>
+                    <select>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </td>
+                <td><button>등록</button></td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <!-- 입력한것을 등록할때 뭐인지 보여줄 칸 -->
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>작업번호</th>
+                    <th>생성일시</th>
+                    <th>생성품목</th>
+                    <th>생성라인</th>
+                    <th>생성수량</th>
+                    <th>진행사항</th>
+                </tr>
+            </thead>
+
+            <!-- 데이터가 추가됩니다 -->
+            <tbody id="table-body">
+                <tr class="none">
+                    <th><input type="checkbox"></th>
+                    <th>0001</th>
+                    <th>2025/02/05</th>
+                    <th>T-10</th>
+                    <th>1라인</th>
+                    <th></th>
+                    <th>진행중</th>
+                </tr>
+                <tr class="none">
+                    <th><input type="checkbox"></th>
+                    <th>0002</th>
+                    <th>2025/02/05</th>
+                    <th>S-10</th>
+                    <th>3라인</th>
+                    <th></th>
+                    <th>진행중</th>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <!-- 페이지 넘길때 쓸 버튼들 -->
+        <div class="pagination">
+            <button>&lt;</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>10</button>
+            <button>&gt;</button>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설비등록</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 95%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-fields {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            min-width: 80px;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            flex: 1;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        @media screen and (max-width: 800px) {
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px !important;
+
+                /* 모바일에서 간격 조정 */
+                width:auto .buttons {
+                    flex-direction: row;
+                    justify-content: center;
+                    margin-top: 10px;
+                }
+
+                button {
+                    width: auto;
+                }
+            }
+
+            .edit-buttons {
+                margin-top: 10px;
+            }
+
+            .active {
+                background-color: #0056b3;
+            }
+
+            h1 {
+                width: 90%;
+            }
+        }
+
+        .active {
+            background-color: #0056b3;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .별 {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>◎ 설비등록</h1>
+
+        <span class="별">* 모두기입</span>
+        <div class="form">
+            <div class="form-fields">
+                <div class="form-row">
+                    <label for="설비코드">설비코드<span class="별"> *</span></label>
+                    <input type="text" id="설비코드">
+                    <label for="관리자">관리자<span class="별"> *</span></label>
+                    <input type="text" id="관리자">
+                </div>
+
+                <div class="form-row">
+                    <label for="설치일">설치일<span class="별"> *</span></label>
+                    <input type="date" id="설치일">
+                    <label for="설비명">설비명<span class="별"> *</span></label>
+                    <input type="text" id="설비명">
+                </div>
+
+                <div class="form-row">
+                    <label for="설비위치">설비위치<span class="별"> *</span></label>
+                    <input type="text" id="설비위치">
+                    <label for="점검주기">점검주기<span class="별"> *</span></label>
+                    <input type="text" id="점검주기">
+                </div>
+
+                <div class="form-row">
+                    <label for="비고사항">비고사항</label>
+                    <input type="text" id="비고사항">
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button id="등록">등록</button>
+                <button id="조회">조회</button>
+                <button id="수정">수정</button>
+                <button id="삭제">삭제</button>
+            </div>
+        </div>
+
+        <div id="check"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="체크박스"></th>
+                    <th>순번</th>
+                    <th>설비코드</th>
+                    <th>설비명</th>
+                    <th>업체명</th>
+                    <th>S/N</th>
+                    <th>관리자</th>
+                    <th>점검주기</th>
+                    <th>설치일</th>
+                    <th>설비위치</th>
+                    <th>비고사항</th>
+                </tr>
+
+                <tr>
+                    <td><input type="checkbox" id="체크박스"></td>
+                    <td>1</td>
+                    <td>G10071</td>
+                    <td>G-100</td>
+                    <td>GKBM</td>
+                    <td>4254214</td>
+                    <td>박천안</td>
+                    <td>1주</td>
+                    <td>2025-02-06</td>
+                    <td>2층 OO부서</td>
+                    <td>-</td>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+
+        <!-- 페이지 넘길때 쓸 버튼들 -->
+        <div class="pagination">
+            <button>&lt;</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>10</button>
+            <button>&gt;</button>
+        </div>
+    </div>
+
+    <script>
+        // 항상 오늘 날짜로 하는 스크립트
+        document.getElementById('설치일').value = new Date().toISOString().substring(0, 10);
+
+        // 체크박스 템플릿 생성
+        const checkboxTemplate = document.createElement('input');
+        checkboxTemplate.type = 'checkbox';
+
+        // 행 번호를 갱신하는 함수
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll("#table-body tr");
+            rows.forEach((row, index) => {
+                row.cells[1].textContent = index + 1;  // 순번 갱신
+            });
+        }
+
+        // 새 행을 추가하는 함수
+        function addRow(설비코드, 설비명, 업체명, 관리자, 점검주기, 설치일, 설비위치, 비고사항) {
+            const tableBody = document.getElementById("table-body");
+            const row = document.createElement("tr");
+            const checkbox = checkboxTemplate.cloneNode(true);
+
+            // 개별 체크박스에 이벤트 리스너 추가
+            checkbox.addEventListener('change', updateSelectAllCheckbox);
+
+            row.innerHTML = `
+                <td></td>
+                <td>${tableBody.children.length + 1}</td>
+                <td>${설비코드}</td>
+                <td>${설비명}</td>
+                <td>${업체명}</td>
+                <td>${관리자}</td>
+                <td>${점검주기}</td>
+                <td>${설치일}</td>
+                <td>${설비위치}</td>
+                <td>${비고사항}</td>`;
+
+            row.cells[0].appendChild(checkbox);
+            tableBody.appendChild(row);
+            updateRowNumbers();
+            updateTable();
+        }
+
+        // '등록' 버튼 이벤트 리스너
+        document.getElementById("등록").addEventListener("click", function () {
+            const fields = ["설비코드", "설비명", "업체명", "관리자", "점검주기", "설치일", "설비위치", "비고사항"];
+            const values = fields.map(field => document.getElementById(field).value);
+
+            if (values.slice(0, -1).some(value => !value)) {
+                alert("필수 항목을 모두 올바르게 입력해주세요.");
+                return;
+            }
+
+            addRow(...values);
+            clearInputFields();
+        });
+
+        // '조회' 버튼 이벤트 리스너
+        document.getElementById("조회").addEventListener("click", function () {
+            const checkedRows = document.querySelectorAll("#table-body tr input[type='checkbox']:checked");
+            const check = [];
+            checkedRows.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const cells = row.cells;
+                const data = {
+                    순번: cells[1].textContent,
+                    설비코드: cells[2].textContent,
+                    설비명: cells[3].textContent,
+                    업체명: cells[4].textContent,
+                    관리자: cells[5].textContent,
+                    점검주기: cells[6].textContent,
+                    설치일: cells[7].textContent,
+                    설비위치: cells[8].textContent,
+                    비고사항: cells[9].textContent
+                };
+                check.push(data);
+            });
+
+            const resultArea = document.getElementById("check");
+            resultArea.innerHTML = '';
+            check.forEach(item => {
+                const p = document.createElement('p');
+                p.textContent = `순번: ${item.순번}, 설비코드: ${item.설비코드}, 설비명: ${item.설비명}, 업체명: ${item.업체명}, 관리자: ${item.관리자}, 점검주기: ${item.점검주기}, 설치일: ${item.설치일}, 설비위치: ${item.설비위치}, 비고사항: ${item.비고사항}`;
+                resultArea.appendChild(p);
+            });
+
+            uncheckAllCheckboxes();
+        });
+
+        // 입력 필드 초기화 함수
+        function clearInputFields() {
+            document.querySelectorAll(".form-fields input").forEach(input => {
+                if (input.id === '설치일') {
+                    input.value = new Date().toISOString().substring(0, 10);
+                } else {
+                    input.value = "";
+                }
+            });
+        }
+
+        // '삭제' 버튼 이벤트 리스너
+        document.getElementById("삭제").addEventListener("click", function () {
+            const checkedRows = document.querySelectorAll("#table-body tr input[type='checkbox']:checked");
+
+            if (checkedRows.length === 0) {
+                alert("삭제할 항목을 1개 이상 체크해주십시오.");
+                return;
+            }
+
+            if (confirm("삭제 하시겠습니까?")) {
+                let deletedCount = 0;
+
+                checkedRows.forEach(checkbox => {
+                    checkbox.closest('tr').remove();
+                    deletedCount++;
+                });
+
+                if (deletedCount > 0) {
+                    updateRowNumbers();
+                    updateTable();
+                }
+            }
+
+            uncheckAllCheckboxes();
+        });
+
+
+        // '수정' 버튼 이벤트 리스너
+        document.getElementById("수정").addEventListener("click", function () {
+            const checkedRows = document.querySelectorAll("#table-body tr input[type='checkbox']:checked");
+            if (checkedRows.length !== 1) {
+                alert("수정할 항목을 하나만 선택해주세요.");
+                return;
+            }
+
+            const row = checkedRows[0].closest('tr');
+            const cells = row.cells;
+
+            uncheckAllCheckboxes();
+            toggleEditMode(true);
+
+            const editableCells = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+            const originalValues = {};
+            editableCells.forEach(index => {
+                originalValues[index] = cells[index].textContent;
+                cells[index].innerHTML = createInputField(index, originalValues[index]);
+            });
+
+            document.getElementById("수정완료").addEventListener("click", () => completeEdit(cells, editableCells));
+            document.getElementById("수정취소").addEventListener("click", () => cancelEdit(cells, originalValues, editableCells));
+        });
+
+        function toggleEditMode(isEditing) {
+            const buttonsContainer = document.querySelector('.buttons');
+            const originalButtons = Array.from(document.querySelectorAll('.buttons button'));
+            const formRows = document.querySelectorAll('.form-row');
+
+            originalButtons.forEach(button => button.style.display = isEditing ? 'none' : '');
+            formRows.forEach(row => row.classList.toggle('hide', isEditing));
+
+            if (isEditing) {
+                const editButtons = createEditButtons();
+                buttonsContainer.appendChild(editButtons);
+            } else {
+                document.querySelector('.edit-buttons')?.remove();
+            }
+        }
+
+        function createEditButtons() {
+            const editButtons = document.createElement('div');
+            editButtons.className = 'edit-buttons';
+            editButtons.innerHTML = `
+        <button id="수정완료">수정완료</button>
+        <button id="수정취소">수정취소</button>
+    `;
+            return editButtons;
+        }
+
+        function createInputField(index, value) {
+            const inputType = index === 8 ? 'date' : 'text';
+            return `<input type="${inputType}" value="${value}" style="width: 90%;">`;
+        }
+
+        function completeEdit(cells, editableCells) {
+            editableCells.forEach(index => {
+                const input = cells[index].querySelector('input');
+                cells[index].textContent = input.value;
+            });
+            toggleEditMode(false);
+        }
+
+        function cancelEdit(cells, originalValues, editableCells) {
+            editableCells.forEach(index => {
+                cells[index].textContent = originalValues[index];
+            });
+            toggleEditMode(false);
+        }
+
+
+        // 개별 체크박스 변경 시 전체 선택 체크박스 상태 업데이트
+        function updateSelectAllCheckbox() {
+            const allCheckboxes = document.querySelectorAll("#table-body input[type='checkbox']");
+            const selectAllCheckbox = document.getElementById("체크박스");
+            selectAllCheckbox.checked = allCheckboxes.length > 0 &&
+                Array.from(allCheckboxes).every(checkbox => checkbox.checked);
+        }
+
+        // 모든 체크박스 해제 함수
+        function uncheckAllCheckboxes() {
+            document.querySelectorAll("#table-body input[type='checkbox'], #체크박스").forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+
+        // 전체 선택 체크박스 이벤트 리스너
+        document.getElementById("체크박스").addEventListener("change", function () {
+            const checkboxes = document.querySelectorAll("#table-body input[type='checkbox']");
+            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+        });
+
+        // 페이지당 표시할 데이터 수
+        const pagedata = 5;
+
+        // 현재 페이지 번호
+        let page = 1;
+
+        // 페이지네이션 버튼에 이벤트 리스너 추가
+        document.querySelectorAll('.pagination button').forEach(button => {
+            button.addEventListener('click', function () {
+                const pageText = this.textContent;
+                if (pageText === '<') {
+                    if (page > 1) {
+                        page--;
+                    }
+                } else if (pageText === '>') {
+                    if (page < Math.ceil(document.getElementById("table-body").children.length / pagedata)) {
+                        page++;
+                    }
+                } else {
+                    page = parseInt(pageText, 10);
+                }
+                updateTable();
+            });
+        });
+
+        // 테이블 업데이트 함수
+        function updateTable() {
+            const rows = document.querySelectorAll("#table-body tr");
+            const startIndex = (page - 1) * pagedata;
+            const endIndex = startIndex + pagedata;
+
+            rows.forEach((row, index) => {
+                if (index >= startIndex && index < endIndex) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // 페이지네이션 버튼 업데이트
+            updatePaginationButtons();
+        }
+
+        // 페이지네이션 버튼 업데이트 함수
+        function updatePaginationButtons() {
+            const buttons = document.querySelectorAll('.pagination button');
+            buttons.forEach(button => {
+                if (button.textContent === page.toString()) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // 초기 테이블 업데이트
+        updateTable();
+
+    </script>
+</body>
+
+</html>

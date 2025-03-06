@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공지사항</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f5f5f5;
+        }
+
+        .main-content {
+            flex: 1;
+            width: 95%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .notice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .notice-header button {
+            padding: 8px 12px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .active:hover {
+            background-color: #357ab7;
+            cursor: pointer;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .search-box input,
+        .search-box button {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-box button {
+            background: #4a90e2;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #4a90e2;
+            color: white;
+        }
+    </style>
+
+    <script>
+        //----------------------
+        // 전역 변수 및 상수 정의
+        //----------------------
+        const INITIAL_POST = {
+            title: '설 연휴 업무관련',
+            important: 'yes',
+            date: '2025-02-05',
+            views: 0,
+            author: '이천안'
+        };
+
+        //----------------------
+        // 체크박스 관련 함수
+        //----------------------
+
+        // 전체 체크박스 토글 함수
+        function toggleAllCheckboxes() {
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('.post-checkbox');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = masterCheckbox.checked;
+            });
+        }
+
+        // 개별 체크박스 상태 변경 시 전체 체크박스 업데이트 함수
+        function updateMasterCheckbox() {
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('.post-checkbox');
+            const checkedBoxes = document.querySelectorAll('.post-checkbox:checked');
+
+            // 모든 체크박스가 선택된 경우에만 전체 체크박스 체크
+            masterCheckbox.checked = (checkedBoxes.length === checkboxes.length);
+        }
+
+        // 페이지 로드 시 이벤트 리스너 추가
+        window.onload = function () {
+            // 전체 체크박스 이벤트 리스너 추가
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            if (masterCheckbox) {
+                masterCheckbox.addEventListener('change', toggleAllCheckboxes);
+            }
+
+            // 개별 체크박스 이벤트 리스너 추가
+            const checkboxes = document.querySelectorAll('.post-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateMasterCheckbox);
+            });
+        }
+
+
+
+        //----------------------
+        // 게시글 목록 로드 함수
+        //----------------------
+        function loadPosts() {
+            // 초기 데이터 설정 (최초 1회)
+            if (!localStorage.getItem('posts')) {
+                localStorage.setItem('posts', JSON.stringify([INITIAL_POST]));
+            }
+
+            // 로컬 스토리지에서 게시글 데이터 가져오기
+            let posts = JSON.parse(localStorage.getItem('posts')) || [];
+            let tableBody = document.getElementById('postList');
+            let tableContent = '';
+
+            // 게시글 목록 생성
+            posts.forEach((post, index) => {
+                tableContent += `
+            <tr>
+                <td><input type="checkbox" class="post-checkbox" data-index="${index}" onchange="updateMasterCheckbox()"></td>
+                <td style="font-weight: bold;">${post.important === 'yes' ? '중요' : '일반'}</td>
+                <td><a href="공지사항작성.html?id=${index}">${post.title}</a></td>
+                <td>${post.author || '관리자'}</td>
+                <td>${post.date}</td>
+                <td>${post.views}</td>
+            </tr>
+        `;
+            });
+
+            tableBody.innerHTML = tableContent;
+
+            // 전체 체크박스 이벤트 리스너 추가
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            if (masterCheckbox) {
+                masterCheckbox.addEventListener('change', toggleAllCheckboxes);
+            }
+        }
+
+        //----------------------
+        // 게시글 삭제 함수
+        //----------------------
+        function deletePosts() {
+            let posts = JSON.parse(localStorage.getItem('posts')) || [];
+            let checkboxes = document.querySelectorAll('.post-checkbox:checked');
+
+            // 삭제할 항목 체크 확인
+            if (checkboxes.length === 0) {
+                alert('삭제할 항목을 선택하세요.');
+                return;
+            }
+
+            // 삭제 확인
+            if (confirm('선택한 항목을 삭제하시겠습니까?')) {
+                let indicesToDelete = Array.from(checkboxes)
+                    .map(checkbox => parseInt(checkbox.getAttribute('data-index')))
+                    .sort((a, b) => b - a);
+
+                // 선택된 게시글 삭제
+                indicesToDelete.forEach(index => {
+                    posts.splice(index, 1);
+                });
+
+                localStorage.setItem('posts', JSON.stringify(posts));
+                loadPosts();
+
+                // 전체 체크박스 해제
+                const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+                if (masterCheckbox) {
+                    masterCheckbox.checked = false;
+                    masterCheckbox.indeterminate = false;
+                }
+                alert('삭제가 완료되었습니다.');
+            }
+        }
+
+        //----------------------
+        // 게시글 수정 함수
+        //----------------------
+        function editPosts() {
+            let checkboxes = document.querySelectorAll('.post-checkbox:checked');
+
+            // 수정할 항목 체크 확인
+            if (checkboxes.length !== 1) {
+                alert('수정할 항목을 하나만 선택해주세요.');
+                return;
+            }
+
+            // 수정 페이지로 이동
+            let index = checkboxes[0].getAttribute('data-index');
+            window.location.href = `공지사항작성.html?id=${index}`;
+        }
+
+        //----------------------
+        // 게시글 저장 함수
+        //----------------------
+        function savePost() {
+            let title = document.getElementById('title').value;
+            let content = document.getElementById('content').value;
+            let important = document.querySelector('input[name="important"]:checked').value;
+            let date = new Date().toISOString().split('T')[0];
+
+            // 필수 입력 확인
+            if (!title.trim()) {
+                alert('제목을 입력해주세요.');
+                return;
+            }
+
+            if (!content.trim()) {
+                alert('내용을 입력해주세요.');
+                return;
+            }
+
+            let posts = JSON.parse(localStorage.getItem('posts')) || [];
+            let postId = new URLSearchParams(window.location.search).get('id');
+
+            if (postId !== null) {
+                // 기존 게시글 수정
+                posts[postId] = {
+                    ...posts[postId],
+                    title,
+                    content,
+                    important,
+                    date
+                };
+            } else {
+                // 새 게시글 작성
+                posts.push({
+                    title,
+                    content,
+                    important,
+                    date,
+                    views: 0,
+                    author: '관리자'
+                });
+            }
+
+            localStorage.setItem('posts', JSON.stringify(posts));
+            window.location.href = '공지사항.html';
+        }
+
+        //----------------------
+        // 검색 기능 함수
+        //----------------------
+        function searchPosts() {
+            const searchText = document.querySelector('input[placeholder="검색어 입력"]').value.toLowerCase();
+            const startDate = document.querySelector('input[type="date"]:first-of-type').value;
+            const endDate = document.querySelector('input[type="date"]:last-of-type').value;
+
+            let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+            // 검색 조건에 맞는 게시글 필터링
+            const filteredPosts = posts.filter(post => {
+                const matchesText = !searchText ||
+                    post.title.toLowerCase().includes(searchText) ||
+                    (post.content && post.content.toLowerCase().includes(searchText));
+
+                const postDate = post.date;
+                const matchesDate = (!startDate || postDate >= startDate) &&
+                    (!endDate || postDate <= endDate);
+
+                return matchesText && matchesDate;
+            });
+
+            // 필터링된 결과 표시
+            displayFilteredPosts(filteredPosts);
+        }
+
+        function displayFilteredPosts(filteredPosts) {
+            let tableBody = document.getElementById('postList');
+            let tableContent = '';
+
+            filteredPosts.forEach((post, index) => {
+                tableContent += `
+            <tr>
+                <td><input type="checkbox" class="post-checkbox" data-index="${index}" onchange="updateMasterCheckbox()"></td>
+                <td style="font-weight: bold;">${post.important === 'yes' ? '중요' : '일반'}</td>
+                <td><a href="공지사항작성.html?id=${index}">${post.title}</a></td>
+                <td>${post.author || '관리자'}</td>
+                <td>${post.date}</td>
+                <td>${post.views}</td>
+            </tr>
+        `;
+            });
+
+            tableBody.innerHTML = tableContent;
+
+            // 전체 체크박스 상태 초기화
+            const masterCheckbox = document.querySelector('th input[type="checkbox"]');
+            if (masterCheckbox) {
+                masterCheckbox.checked = false;
+                masterCheckbox.indeterminate = false;
+            }
+        }
+
+        //----------------------
+        // 페이지 로드 이벤트
+        //----------------------
+        window.onload = function () {
+            // 게시글 목록 로드
+            loadPosts();
+
+            // 검색 버튼 이벤트 리스너 추가
+            const searchButton = document.querySelector('button.active:nth-of-type(1)');
+            if (searchButton) {
+                searchButton.addEventListener('click', searchPosts);
+            }
+
+            // 수정 페이지에서 기존 데이터 로드
+            let postId = new URLSearchParams(window.location.search).get('id');
+            if (postId !== null) {
+                let posts = JSON.parse(localStorage.getItem('posts')) || [];
+                let post = posts[postId];
+                if (post) {
+                    document.getElementById('title').value = post.title;
+                    document.getElementById('content').value = post.content || '';
+                    document.querySelector(`input[name="important"][value="${post.important}"]`).checked = true;
+                }
+            }
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+    <!-- 메인 공지사항 컨텐츠 -->
+    <div class="main-content">
+        <div class="notice-header">
+            <h2>공지사항</h2>
+            <button type="button" class="active" onclick="window.location.href='공지사항작성.html'">공지사항 작성</button>
+        </div>
+
+        <!-- 검색 필터 -->
+        <div class="search-box">
+            <label>작성일자</label>
+            <input type="date">
+            <span>~</span>
+            <input type="date">
+            <input type="text" placeholder="검색어 입력">
+            <button class="active" onclick="searchPosts()">🔍 검색</button>
+            <button class="active" onclick="editPosts()">수정</button>
+            <button class="active" onclick="deletePosts()">삭제</button>
+        </div>
+
+        <!-- 공지사항 리스트 -->
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>구분</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일자</th>
+                    <th>조회수</th>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td style="font-weight: bold;">중요</td>
+                    <td>설 연휴 업무관련</td>
+                    <td>이천안</td>
+                    <td>2025-02-05</td>
+                    <td>0</td>
+                </tr>
+            </thead>
+            <tbody id="postList"></tbody>
+        </table>
+</body>
+
+</html>

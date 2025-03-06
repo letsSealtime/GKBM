@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 95%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            border: 1px solid black;
+        }
+
+        .form {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-grow: 1;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-column {
+            flex: 1 1 calc(33% - 20px)
+        }
+
+        .form-row .buttons {
+            margin-left: auto;
+            /* 오른쪽으로 정렬 */
+            display: flex;
+            flex-direction: column;
+            /* 세로 정렬 */
+            gap: 10px;
+            /* 버튼 간 간격 */
+        }
+
+        label {
+            min-width: 60px;
+        }
+
+        select {
+            width: 150px;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #4a90e2;
+            cursor: pointer;
+        }
+
+        .pagination button:hover {
+            background: #0056b3;
+        }
+
+        .none {
+            display: none;
+        }
+    </style>
+
+    <script>
+        window.addEventListener("load", init)
+
+        function init() {
+            let insert = document.querySelector("#insert");
+            insert.addEventListener("click", function () {
+                let selectedCriteria = {
+                    부적합번호: document.getElementById("c_d").value,
+                    로케이션: document.getElementById("c_c").value,
+                    제품코드: document.getElementById("c_p").value,
+                    제품명: document.getElementById("c_j").value,
+                    유형: document.querySelector("#c_type").value,
+                    회사명: document.getElementById("c_m").value
+                };
+
+                filterTable(selectedCriteria);
+            });
+        }
+
+        function filterTable(criteria) {
+            let rows = document.querySelectorAll("#table-body tr");
+            rows.forEach(row => {
+                let columns = row.querySelectorAll("td");
+                let shouldHide = false;
+
+                if (criteria.부적합번호 && criteria.부적합번호 !== columns[2].textContent) {
+                    shouldHide = true;
+                }
+                if (criteria.로케이션 && criteria.로케이션 !== columns[3].textContent) {
+                    shouldHide = true;
+                }
+                if (criteria.제품코드 && criteria.제품코드 !== columns[5].textContent) {
+                    shouldHide = true;
+                }
+                if (criteria.제품명 && criteria.제품명 !== columns[6].textContent) {
+                    shouldHide = true;
+                }
+                if (criteria.유형 && criteria.유형 !== columns[8].textContent) {
+                    shouldHide = true;
+                }
+                if (criteria.회사명 && criteria.회사명 !== columns[9].textContent) {
+                    shouldHide = true;
+                }
+
+                row.style.display = shouldHide ? 'none' : '';
+            });
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>◎ 불량관리</h1>
+
+        <!-- 입력할곳 및 등록, 조회, 수정, 삭제버튼 -->
+        <div class="form">
+            <div class="form-row">
+                <div class="form-column">
+                    <label for="c_d">부적합 번호</label>
+                    <select id="c_d">
+                        <option value="">선택</option>
+                        <option value="0001">0001</option>
+                        <option value="0002">0002</option>
+                    </select>
+                </div>
+                <div class="form-column">
+                    <label for="c_c">로케이션</label>
+                    <select id="c_c">
+                        <option value="">선택</option>
+                        <option value="DX-1-1">DX-1-1</option>
+                        <option value="DX-2-1">DX-2-1</option>
+                    </select>
+                </div>
+                <div class="form-column">
+                    <label for="c_p">제품코드</label>
+                    <select id="c_p">
+                        <option value="">선택</option>
+                        <option value="T-10">T-10</option>
+                        <option value="S-10">S-10</option>
+                    </select>
+                </div>
+                <div class="form-column">
+                    <label for="c_j">제품명</label>
+                    <select id="c_j">
+                        <option value="">선택</option>
+                        <option value="칫솔모">칫솔모</option>
+                        <option value="스틱">스틱</option>
+                    </select>
+                </div>
+                <div class="form-column">
+                    <label for="c_type">유형</label>
+                    <select id="c_type">
+                        <option value="">선택</option>
+                        <option value="원자재">원자재</option>
+                        <option value="완제품">완제품</option>
+                    </select>
+                </div>
+                <div class="form-column">
+                    <label for="c_m">회사명</label>
+                    <select id="c_m">
+                        <option value="">선택</option>
+                        <option value="가상업체">가상업체</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="buttons">
+                    <button id="insert">조회</button>
+                </div>
+            </div>
+        </div>
+        <!-- 내가 체크한것들을 조회버튼을 누르면 추출 -->
+        <div id="check"></div>
+
+        <!-- 입력한것을 등록할때 뭐인지 보여줄 칸 -->
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="checkbox"></th>
+                    <th>순번</th>
+                    <th>부적합 번호</th>
+                    <th>로케이션</th>
+                    <th>바코드</th>
+                    <th>제품코드</th>
+                    <th>제품명</th>
+                    <th>수량</th>
+                    <th>원자재/완제품</th>
+                    <th>회사명</th>
+                    <th>회사코드</th>
+                </tr>
+            </thead>
+
+            <!-- 데이터가 추가됩니다 -->
+            <tbody id="table-body">
+                <tr>
+                    <td><input type="checkbox" id="checkbox"></td>
+                    <td>1</td>
+                    <td>0001</td>
+                    <td>DX-1-1</td>
+                    <td>S00081</td>
+                    <td>T-10</td>
+                    <td>칫솔모</td>
+                    <td>2</td>
+                    <td>완제품</td>
+                    <td>가상업체</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" id="checkbox"></td>
+                    <td>2</td>
+                    <td>0002</td>
+                    <td>DX-1-1</td>
+                    <td>S000</td>
+                    <td>S-10</td>
+                    <td>스틱</td>
+                    <td>1</td>
+                    <td>완제품</td>
+                    <td>가상업체</td>
+                    <td>1</td>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <!-- 페이지 넘길때 쓸 버튼들 -->
+        <div class="pagination">
+            <button>&lt;</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>10</button>
+            <button>&gt;</button>
+        </div>
+    </div>
+</body>
+
+</html>

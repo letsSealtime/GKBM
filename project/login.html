@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Document</title>
+    <style>
+        body {
+            /* 배경색 설정 */
+            background-color: #f4f4f4;
+            /* 패딩 추가 */
+            padding: 20px;
+        }
+
+        #mainbox {
+            /* 배경색 설정 */
+            background-color: #ffffff;
+            /* 모서리 둥글게 */
+            border-radius: 10px;
+            /* 그림자 효과 */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            /* 내부 여백 추가 */
+            padding: 20px;
+            /* 최대 너비 설정 */
+            max-width: 400px;
+            /* 중앙 정렬 */
+            margin: 150px auto;
+            /* 텍스트 중앙 정렬 */
+            text-align: center;
+        }
+
+        /* ---------- 로고 css ---------- */
+        #logo {
+            /* border: 1px solid black; */
+            /* 이미지 박스의 너비 */
+            width: 100px;
+            /* 이미지 박스의 높이 */
+            height: 80px;
+            /* 이미지박스에 flex 부여 */
+            display: flex;
+            /* 이미지 위아래 중앙정렬 */
+            align-items: center;
+            /* 이미지를 중앙정렬 */
+            justify-content: center;
+            /* 이미지의 박스를 중앙 정렬 */
+            margin: 0 auto;
+
+        }
+
+        #logo img {
+            /* 이미지의 너비크기 */
+            width: 150%;
+        }
+
+        /* ---------- id와 pw css ---------- */
+        #id,
+        #pw {
+            /* 너비 조정 */
+            width: calc(100% - 20px);
+            /* 내부 여백 추가 */
+            padding: 10px;
+            /* 경계선 색상 */
+            border: 1px solid #ccc;
+            /* 모서리 둥글게 */
+            border-radius: 5px;
+            /* 여백 추가 */
+            margin-top: 10px;
+        }
+
+        /* ---------- 아이디찾기와 비번찾기, 회원가입 css ---------- */
+
+        .find_id,
+        .find_pw,
+        .create_id {
+            /* 위쪽여백 추가 */
+            margin-top: 20px;
+            /* 버튼 너비 30% */
+            width: 30%;
+            /* 배경색을 초록으로 변경 */
+            background-color: #4a90e2;
+            /* 텍스트 색상 */
+            color: white;
+            /* 내부여백 추가 */
+            padding: 5px;
+            /* 버튼의 border 제거 */
+            border: none;
+            /* 모서리 둥글게 */
+            border-radius: 10px;
+            /* 폰트 크기 조정 */
+            font-size: 15px;
+            /* 커서 포인터로 변경 */
+            cursor: pointer;
+            /* 배경색과 변형 효과 */
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .find_id:hover,
+        .find_pw:hover,
+        .create_id:hover {
+            /* 호버 시 배경색 변경 */
+            background-color: #2f6baf;
+            /* 호버 시 약간 확대 */
+            transform: scale(1.07);
+        }
+
+        /* ---------- 로그인 css ---------- */
+        .login {
+            /* 위쪽여백 추가 */
+            margin-top: 20px;
+            /* 버튼 너비 100% */
+            width: 100%;
+            /* 로그인 버튼 배경색을 초록색으로 변경 */
+            background-color: #4a90e2;
+            /* 텍스트 색상 */
+            color: white;
+            /* 내부 여백 추가 */
+            padding: 12px;
+            /* 버튼의 border 제거 */
+            border: none;
+            /* 모서리 둥글게 */
+            border-radius: 10px;
+            /* 폰트 크기 조정 */
+            font-size: 16px;
+            /* 커서 포인터로 변경 */
+            cursor: pointer;
+            /* 배경색과 변형 효과 */
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .login:hover {
+            /* 호버 시 배경색 변경 */
+            background-color: #2f6baf;
+            /* 호버 시 약간 확대 */
+            transform: scale(1.05);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="mainbox">
+        <!-- 로고 칸 -->
+        <div id="logo">
+            <img src="GKBM_logo.png" alt="GKBM MES SYSTEM">
+        </div>
+        <!-- 아이디를 입력 하는 칸 -->
+        <input type="text" id="id" placeholder="아이디를 입력하세요">
+        <!-- 비밀번호를 입력 하는 칸 -->
+        <input type="password" id="pw" placeholder="pw">
+
+        <!-- 아이디찾기와 비번찾기, 회원가입 칸 -->
+        <input type="button" class="find_id" value="아이디찾기">
+        <input type="button" class="find_pw" value="비밀번호찾기">
+        <input type="button" class="create_id" value="회원가입">
+
+        <!-- 로그인 버튼칸 -->
+        <input type="button" class="login" value="로그인">
+    </div>
+</body>
+<script>
+    // ---------------------- user_admin ID와 PW 관리 json ----------------------
+    const user = new XMLHttpRequest();
+    user.open('get', 'user.Json')
+    user.send();
+    user.onload = function () {
+        const user_data = JSON.parse(user.responseText)
+        console.log(user_data)
+
+
+        // ---------------------- 엔터키 활성화 ----------------------
+        addEventListener("keydown", function (evnet) {
+            if (evnet.keyCode == 13) {
+                document.querySelector(".login").click();
+            }
+        })
+
+        // ---------------------- 로그인 버튼 클릭 이벤트 ----------------------
+        document.querySelector(".login").addEventListener("click", function () {
+            const id = document.querySelector('#id').value; // 아이디 필드 요소를 선택
+            const pw = document.querySelector('#pw').value
+
+            // ---------------------- user_data를 기반으로 입력된 id와 pw가 동일한지 확인해서 로그인하는 기능 ----------------------
+            let flag = false;
+            let a = 1;
+            let userData;
+            for (let i = 0; i < user_data.length; i++) {
+                console.log("id", user_data[i].id, "pw", user_data[i].pw)
+                if (user_data[i].id == id && user_data[i].pw == pw) {
+                    userData = user_data[i];
+                    // grade가 1번이면 관리자 로그인
+                    if (user_data[i].grade === 1) {
+                        a = 1;
+                        flag = true
+                    }
+                    // grade가 2번이면 작업자 로그인
+                    if (user_data[i].grade === 2) {
+                        a = 2;
+                        flag = true
+                    }
+                }
+            }
+
+            console.log("a", a)
+            // grade가 1번이면 관리자 로그인
+            if (flag && a == 1) {
+                alert("관리자 계정으로 로그인 되었습니다.")
+                console.log("1번")
+                sessionStorage.setItem('user', JSON.stringify(userData));
+                window.location.href = "mainpage.html";   // 관리자가 로그인시 오픈되는 페이지
+            }
+            // grade가 2번이면 작업자 로그인
+            else if (flag && a == 2) {
+                alert("작업자 계정으로 로그인 되었습니다.")
+                console.log("2번")
+                sessionStorage.setItem('user', JSON.stringify(userData));
+                window.location.href = "mainpage.html";   // 작업자가 로그인시 오픈되는 페이지
+            }
+            else {
+                alert("아이디를 확인해주십시오")
+            }
+
+            document.querySelector('#id').value = ""; // 아이디 필드의 값을 비움
+            document.querySelector('#pw').value = ""; // 비밀번호 필드의 값을 비움
+        });
+
+        /* 아이디 찾기 */
+        document.querySelector(".find_id").addEventListener('click', function () {
+            alert("관리자에게 문의 바랍니다.")
+        })
+
+        /* 비밀번호 찾기 */
+        document.querySelector(".find_pw").addEventListener('click', function () {
+            alert("관리자에게 문의 바랍니다.")
+        })
+
+        document.querySelector(".create_id").addEventListener('click', function () {
+            alert("관리자에게 문의 바랍니다.")
+        })
+    }
+</script>
+
+
+</html>
