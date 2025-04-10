@@ -146,53 +146,35 @@
 
 <body>
     <div class="container">
-        <h1>◎ 완제품 출고관리</h1>
-        
+        <h1>◎ 원자재 코드관리</h1>
+
         <!-- 입력할곳 및 등록, 조회, 수정, 삭제버튼 -->
         <span>* 모두 기입</span>
         <div class="form">
             <div class="form-fields">
                 <div class="form-row">
-                    <label for="완제품코드">완제품코드<span>*</span></label>
-                    <select id="완제품코드">
-                        <option></option>
-                        <option>GS1-128</option>
-                        <option>GS1-129</option>
-                    </select>
-
-                    <label for="완제품명">완제품명<span>*</span></label>
-                        <select id="완제품명">
-                            <option value="선택하세요">선택하세요</option>
-                        </select>
-
-
-                </div>
-
-                <div class="form-row">
-                    <label for="수량">수량<span>*</span></label>
-                    <input type="text" id="수량">
-
-                    <label for="출고단가">출고단가<span>*</span></label>
-                    <input type="text" id="출고단가">
-
-                </div>
-
-
-                <div class="form-row">
+                    <label for="원자재코드">원자재코드<span>*</span></label>
+                    <input type="text" id="원자재코드">
                     <label for="규격">규격<span>*</span></label>
                     <input type="text" id="규격">
 
-                    <label for="일자">일자<span>*</span></label>
-                    <input type="text" id="일자">
+
+                </div>
+                <div class="form-row">
+                    <label for="원자재명">원자재명<span>*</span></label>
+                    <input type="text" id="원자재명">
+                    <label for="기능사양">기능사양<span>*</span></label>
+                    <input type="text" id="기능사양">
 
 
                 </div>
-
                 <div class="form-row">
+                    <label for="모델번호">모델번호<span>*</span></label>
+                    <input type="text" id="모델번호">
                     <label for="비고사항">비고사항</label>
                     <input type="text" id="비고사항">
-                </div>
 
+                </div>
             </div>
             <div class="buttons">
                 <button id="등록">등록</button>
@@ -210,30 +192,22 @@
                 <tr>
                     <th><input type="checkbox" id="체크박스"></th>
                     <th>순번</th>
-                    <th>일자</th>
-                    <th>완제품코드</th>
-                    <th>완제품명</th>
+                    <th>원자재코드</th>
+                    <th>원자재명</th>
+                    <th>모델번호</th>
                     <th>규격</th>
-                    <th>수량</th>
-                    <th>출고단가</th>
-                    <th>공급가액</th>
-                    <th>세액</th>
-                    <th>합계</th>
+                    <th>기능사양</th>
                     <th>비고사항</th>
                 </tr>
 
                 <tr>
                     <th><input type="checkbox" id="체크박스"></th>
                     <th>1</th>
-                    <th>3월1일</th>
-                    <th>GS1-128</th>
-                    <th>칫솔</th>
+                    <th>4001</th>
+                    <th>고무</th>
+                    <th>3</th>
                     <th>라지</th>
-                    <th>1</th>
-                    <th>1</th>
-                    <th>1</th>
-                    <th>0.1</th>
-                    <th>1.1</th>
+                    <th>미끄럼방지</th>
                     <th></th>
                 </tr>
             </thead>
@@ -277,7 +251,7 @@
         }
 
         // 데이터 추가 함수
-        function addRow(일자, 완제품코드, 완제품명, 규격, 수량, 출고단가, 비고사항) {
+        function addRow(원자재코드, 원자재명, 모델번호, 규격, 기능사양, 비고사항) {
             const tableBody = document.getElementById("table-body");
             const row = document.createElement("tr");
 
@@ -285,17 +259,13 @@
             const checkbox = checkboxTemplate.cloneNode(true);
 
             row.innerHTML = `
-        <td></td>
+            <td></td>
         <td>${tableBody.children.length + 1}</td>
-        <td>${일자}</td>
-        <td>${완제품코드}</td>
-        <td>${완제품명}</td>
+        <td>${원자재코드}</td>
+        <td>${원자재명}</td>
+        <td>${모델번호}</td>
         <td>${규격}</td>
-        <td>${수량}</td>
-        <td>${출고단가.toLocaleString()}</td>
-        <td>${(수량 * 출고단가).toLocaleString()}</td> 
-        <td>${(수량 * 출고단가 * 0.1).toLocaleString()}</td> 
-        <td>${(수량 * 출고단가 * 1.1).toLocaleString()}</td> 
+        <td>${기능사양}</td>
         <td>${비고사항}</td>  `;
 
             // 체크박스 셀에 추가
@@ -306,28 +276,28 @@
 
         // 등록 버튼 클릭 이벤트
         document.getElementById("등록").addEventListener("click", function () {
-            const 일자 = document.getElementById("일자").value;
-            const 완제품코드 = document.getElementById("완제품코드").value;
-            const 완제품명 = document.getElementById("완제품명").value;
+            const 원자재코드 = document.getElementById("원자재코드").value;
+            const 원자재명 = document.getElementById("원자재명").value;
+            const 모델번호 = document.getElementById("모델번호").value;
             const 규격 = document.getElementById("규격").value;
-            const 수량 = parseInt(document.getElementById("수량").value, 10);
-            const 출고단가 = parseInt(document.getElementById("출고단가").value, 10);
+            const 기능사양 = document.getElementById("기능사양").value;
             const 비고사항 = document.getElementById("비고사항").value;
 
             // 데이터 유효성 검사 
-            if (!일자 || !완제품코드 || !완제품명 || !규격 || !수량 || !출고단가) {
+            if (!원자재코드 || !원자재명 || !모델번호 || !규격 || !기능사양) {
                 alert("필수 항목을 모두 입력해주세요.");
                 return;
             }
 
             // 등록을 누르면 내가 입력한것을 넣어주는것
-            addRow(일자, 완제품코드, 완제품명, 규격, 수량, 출고단가, 비고사항);
+            addRow(원자재코드, 원자재명, 모델번호, 규격, 기능사양, 비고사항);
 
             // 입력 필드 초기화
-            document.getElementById("일자").value = "";
+            document.getElementById("원자재코드").value = "";
+            document.getElementById("원자재명").value = "";
+            document.getElementById("모델번호").value = "";
             document.getElementById("규격").value = "";
-            document.getElementById("수량").value = "";
-            document.getElementById("출고단가").value = "";
+            document.getElementById("기능사양").value = "";
             document.getElementById("비고사항").value = "";
 
         });
@@ -391,16 +361,12 @@
                 const cells = row.querySelectorAll('td');
                 const data = {
                     순번: cells[1].textContent,
-                    일자: cells[2].textContent,
-                    완제품코드: cells[3].textContent,
-                    완제품명: cells[4].textContent,
+                    원자재코드: cells[2].textContent,
+                    원자재명: cells[3].textContent,
+                    모델번호: cells[4].textContent,
                     규격: cells[5].textContent,
-                    수량: cells[6].textContent,
-                    출고단가: cells[7].textContent,
-                    공급가액: cells[8].textContent,
-                    세액: cells[9].textContent,
-                    합계: cells[10].textContent,
-                    비고사항: cells[11].textContent,
+                    기능사양: cells[6].textContent,
+                    비고사항: cells[7].textContent
 
                 };
                 check.push(data);
@@ -411,16 +377,12 @@
             resultArea.innerHTML = ''; // 기존 결과 초기화
             check.forEach(item => {
                 const p = document.createElement('p');
-                p.textContent = `일자: ${item.일자}, 
-                                 순번: ${item.순번}, 
-                                 완제품코드: ${item.완제품코드}, 
-                                 완제품명: ${item.완제품명}
+                p.textContent = `순번: ${item.순번}, 
+                                 원자재코드: ${item.원자재코드}, 
+                                 원자재명: ${item.원자재명}
+                                 모델번호: ${item.모델번호}
                                  규격: ${item.규격}
-                                 수량: ${item.수량}
-                                 출고단가: ${item.출고단가}
-                                 공급가액: ${item.공급가액}
-                                 세액: ${item.세액}
-                                 합계: ${item.합계}
+                                 기능사양: ${item.기능사양}
                                  비고사항: ${item.비고사항}`;
                 resultArea.appendChild(p);
             });
@@ -444,20 +406,19 @@
             }
 
             // 입력 필드와 버튼 숨기기
-            document.getElementById("완제품코드").style.display = "none";
-            document.getElementById("완제품명").style.display = "none";
-            document.getElementById("수량").style.display = "none";
+            document.getElementById("원자재코드").style.display = "none";
+            document.getElementById("원자재명").style.display = "none";
+            document.getElementById("모델번호").style.display = "none";
             document.getElementById("규격").style.display = "none";
-            document.getElementById("출고단가").style.display = "none";
-            document.getElementById("일자").style.display = "none";
+            document.getElementById("기능사양").style.display = "none";
             document.getElementById("비고사항").style.display = "none";
-            document.querySelector('label[for="완제품코드"]').style.display = "none";
-            document.querySelector('label[for="완제품명"]').style.display = "none";
-            document.querySelector('label[for="수량"]').style.display = "none";
+            document.querySelector('label[for="원자재코드"]').style.display = "none";
+            document.querySelector('label[for="원자재명"]').style.display = "none";
+            document.querySelector('label[for="모델번호"]').style.display = "none";
             document.querySelector('label[for="규격"]').style.display = "none";
-            document.querySelector('label[for="출고단가"]').style.display = "none";
-            document.querySelector('label[for="일자"]').style.display = "none";
+            document.querySelector('label[for="기능사양"]').style.display = "none";
             document.querySelector('label[for="비고사항"]').style.display = "none";
+
             const row = checkedRows[0].closest('tr');
             const cells = row.cells;
 
@@ -476,7 +437,7 @@
             buttonsContainer.appendChild(editButtons);
 
             // 수정: 모든 입력 필드를 텍스트로 통일
-            const editableCells = [2, 3, 4, 5, 6, 7, 11];
+            const editableCells = [2, 3, 4, 5, 6, 7];
             editableCells.forEach(index => {
                 const originalValue = cells[index].textContent;
                 cells[index].innerHTML = `<input type="text" value="${originalValue}" style="width: 90%;">`;
@@ -489,35 +450,18 @@
                     cells[index].textContent = input.value;
                 });
 
-                // 수량과 출고단가를 다시 가져와서 공급가액, 세액, 합계를 계산
-                const 수량 = parseInt(cells[6].textContent, 10);
-                const 출고단가 = parseInt(cells[7].textContent.replace(/,/g, ''), 10); // 쉼표 제거 후 숫자로 변환
-
-                // 공급가액, 세액, 합계 계산
-                const 공급가액 = 수량 * 출고단가;
-                const 세액 = 공급가액 * 0.1;
-                const 합계 = 공급가액 + 세액;
-
-                // 계산된 값을 테이블에 반영
-                cells[8].textContent = 공급가액.toLocaleString();
-                cells[9].textContent = 세액.toLocaleString();
-                cells[10].textContent = 합계.toLocaleString();
-
-                document.getElementById("완제품코드").style.display = "";
-                document.getElementById("완제품명").style.display = "";
-                document.getElementById("수량").style.display = "";
+                document.getElementById("원자재코드").style.display = "";
+                document.getElementById("원자재명").style.display = "";
+                document.getElementById("모델번호").style.display = "";
                 document.getElementById("규격").style.display = "";
-                document.getElementById("출고단가").style.display = "";
-                document.getElementById("일자").style.display = "";
+                document.getElementById("기능사양").style.display = "";
                 document.getElementById("비고사항").style.display = "";
-                document.querySelector('label[for="완제품코드"]').style.display = "";
-                document.querySelector('label[for="완제품명"]').style.display = "";
-                document.querySelector('label[for="수량"]').style.display = "";
+                document.querySelector('label[for="원자재코드"]').style.display = "";
+                document.querySelector('label[for="원자재명"]').style.display = "";
+                document.querySelector('label[for="모델번호"]').style.display = "";
                 document.querySelector('label[for="규격"]').style.display = "";
-                document.querySelector('label[for="출고단가"]').style.display = "";
-                document.querySelector('label[for="일자"]').style.display = "";
+                document.querySelector('label[for="기능사양"]').style.display = "";
                 document.querySelector('label[for="비고사항"]').style.display = "";
-                // 수정 완료 후 버튼 초기화
                 editButtons.remove();
                 originalButtons.forEach(button => button.style.display = '');
             });
@@ -527,56 +471,21 @@
                 editableCells.forEach(index => {
                     cells[index].textContent = cells[index].querySelector('input').defaultValue;
                 });
-
-                document.getElementById("완제품코드").style.display = "";
-                document.getElementById("완제품명").style.display = "";
-                document.getElementById("수량").style.display = "";
+                document.getElementById("원자재코드").style.display = "";
+                document.getElementById("원자재명").style.display = "";
+                document.getElementById("모델번호").style.display = "";
                 document.getElementById("규격").style.display = "";
-                document.getElementById("출고단가").style.display = "";
-                document.getElementById("일자").style.display = "";
+                document.getElementById("기능사양").style.display = "";
                 document.getElementById("비고사항").style.display = "";
-                document.querySelector('label[for="완제품코드"]').style.display = "";
-                document.querySelector('label[for="완제품명"]').style.display = "";
-                document.querySelector('label[for="수량"]').style.display = "";
+                document.querySelector('label[for="원자재코드"]').style.display = "";
+                document.querySelector('label[for="원자재명"]').style.display = "";
+                document.querySelector('label[for="모델번호"]').style.display = "";
                 document.querySelector('label[for="규격"]').style.display = "";
-                document.querySelector('label[for="출고단가"]').style.display = "";
-                document.querySelector('label[for="일자"]').style.display = "";
+                document.querySelector('label[for="기능사양"]').style.display = "";
                 document.querySelector('label[for="비고사항"]').style.display = "";
                 editButtons.remove();
                 originalButtons.forEach(button => button.style.display = '');
             });
-        });
-
-        // 완제품코드별 완제품명 목록 
-        const productMaterials = {
-            "GS1-128": ["칫솔"],
-            "GS1-129": ["강철칫솔"]
-            
-        };
-
-        // 완제품코드 선택 시 완제품명 목록 업데이트
-        document.getElementById("완제품코드").addEventListener("change", function () {
-            const selectedProduct = this.value;
-            const materialSelect = document.getElementById("완제품명");
-
-            // 기존 목록 초기화
-            materialSelect.innerHTML = "";
-
-            // 기본 옵션 추가
-            const defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.textContent = "선택하세요";
-            materialSelect.appendChild(defaultOption);
-
-            // 선택된 완제품코드에 맞는 완제품명 목록 추가
-            if (selectedProduct in productMaterials) {
-                productMaterials[selectedProduct].forEach(material => {
-                    const option = document.createElement("option");
-                    option.value = material;
-                    option.textContent = material;
-                    materialSelect.appendChild(option);
-                });
-            }
         });
 
 
@@ -637,7 +546,6 @@
 
         // 초기 테이블 업데이트
         updateTable();
-
 
 
 
