@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.emp.page">
+	
+	
+	<!-- 현재페이지몇줄인지보기 -->
+	<select id="selectPageEmp" resultType="kr.or.GKBM.EmpDTO" parameterType="empDTO">
+		select rnum, ename from(
+			select rownum as rnum, ename from (
+				select ename from emp2
+				order by ename
+			)
+		)
+		where rnum <![CDATA[ >= ]]> #{indexStart} and rnum <![CDATA[ <= ]]>#{indexEnd}
+	</select>
+
+	<select id="totalEmp" resultType="int">
+		select count(*) from emp2
+	</select>
+
+</mapper>
