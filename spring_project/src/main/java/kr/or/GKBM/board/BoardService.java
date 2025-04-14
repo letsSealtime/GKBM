@@ -3,9 +3,10 @@ package kr.or.GKBM.board;
 import java.util.List;
 
 
+
 public interface BoardService {
 
-	List getBoardList();
+	List<BoardDTO> getBoardList();
 	
 	public int updateEmp(BoardDTO boardDTO);
 	public int insertEmp(BoardDTO boardDTO);

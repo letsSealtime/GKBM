@@ -14,8 +14,8 @@ public class BoardDAOImpl implements BoardDAO {
 	
 	
 	@Override
-	public List<BoardDTO> selectBoardList(BoardDTO boardDTO) {
-		List<BoardDTO> result = sqlSession.selectList("mapper.gkbm.emp.board.selectBoardList",boardDTO);
+	public List<BoardDTO> selectBoardList() {
+		List<BoardDTO> result = sqlSession.selectList("mapper.gkbm.emp.board.selectBoardList");
 		System.out.println("result : " + result);
 		return result;
 	}
