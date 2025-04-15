@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.emp">
+	<!-- 전체조회하기 -->
+	<select id="selectEmp" resultType="kr.or.GKBM.EmpDTO">
+		select * from p_sku
+	</select>
+
+	<!-- 등록 -->
+	<insert id="addition" parameterType="empDTO">
+    insert into p_sku
+    VALUES (#{sku_id},
+    #{sku_code},
+    #{sku_name},
+    #{sku_size},
+    #{vendor_name},
+    #{price},
+    SYSDATE, 
+    #{modify_date},
+    #{sku_category})
+</insert>
+
+<!-- 삭제 -->
+	<delete id="delete" parameterType="empDTO">
+
+		delete from p_sku where sku_id = #{sku_id}
+
+	</delete>
+
+<!-- 내가 원하는것 조회 -->
+<select id="selectBySkuId" parameterType="empDTO" resultType="empDTO">
+    SELECT * FROM p_sku WHERE sku_code = #{sku_code}
+</select>
+	
+</mapper>
